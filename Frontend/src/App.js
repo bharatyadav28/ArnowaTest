@@ -5,25 +5,16 @@ import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
-import { Authenticated, PreventReLogin } from "./components/Authenticated";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        // <Authenticated>
-        <Home />
-        // </Authenticated>
-      ),
+      element: <Home />,
     },
     {
       path: "/login",
-      element: (
-        <PreventReLogin>
-          <Login />
-        </PreventReLogin>
-      ),
+      element: <Login />,
     },
   ]);
 

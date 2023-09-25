@@ -1,9 +1,11 @@
-import { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import classes from "./LoginForm.module.css";
 import useInput from "../hooks/use-input";
 import useHttp from "../hooks/use-http";
+import retreiveCurrentUser from "../store/current-user-action";
 import {
   notifySuccess,
   notifyError,
@@ -14,11 +16,17 @@ import {
 
 const LoginForm = () => {
   const { isLoading, error, dbConnect: sendData, setError } = useHttp();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.currentUser.user);
+  const isLoggedStorage = localStorage.getItem("login");
 
-  if (error) {
-    error && notifyError(error);
-    setError(null);
-  }
+  // useEffect(() => {
+  //   if (user || isLoggedIn) {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   const {
     input: name,
@@ -47,10 +55,13 @@ const LoginForm = () => {
     inputBlurHandler: numberBlurHandler,
   } = useInput(isTenChars);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  if (isLoggedIn) {
+  if (isLoggedIn || isLoggedStorage) {
     return <Navigate to="/" />;
+  }
+
+  if (error) {
+    error && notifyError(error);
+    setError(null);
   }
 
   // on form submit
@@ -61,6 +72,7 @@ const LoginForm = () => {
       notifySuccess(data.msg);
       notifySuccess("Hello " + data?.user?.name);
       localStorage.setItem("login", true);
+      dispatch(retreiveCurrentUser());
       setIsLoggedIn(true);
     };
 

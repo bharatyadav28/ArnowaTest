@@ -29,7 +29,7 @@ const logout = async (req, res) => {
   const userInfo = await InfoModel.findOne({ user: userId, active: true });
   const startTime = userInfo.loginTime;
   const now = new Date(Date.now());
-  const sessionTime = (now - startTime) / 1000;
+  const sessionTime = Math.round((now - startTime) / 1000);
 
   userInfo.sessionTime = sessionTime;
   userInfo.active = false;

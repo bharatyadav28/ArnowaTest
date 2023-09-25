@@ -50,7 +50,7 @@ const UserInfo = ({ userData }) => {
           <thead>
             <tr className="w3-light-grey">
               <th>Previous Login</th>
-              <th>Session time</th>
+              <th>Session time(seconds)</th>
               <th>messages</th>
             </tr>
           </thead>

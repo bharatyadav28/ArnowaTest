@@ -6,18 +6,14 @@ import useHttp from "../hooks/use-http";
 import Navbar from "../components/Navbar";
 import MessageForm from "../components/MessageForm";
 import UserInfo from "../components/UserInfo";
-import retreiveCurrentUser from "../store/current-user-action";
 import { currentUserActions } from "../store/current-user";
+import retreiveCurrentUser from "../store/current-user-action";
 
 const Home = () => {
   const userData = useSelector((state) => state.currentUser);
   const dispatch = useDispatch();
   const { dbConnect } = useHttp();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    dispatch(retreiveCurrentUser());
-  }, []);
 
   useEffect(() => {
     const interval = setTimeout(() => {
@@ -30,15 +26,25 @@ const Home = () => {
         dbConnect({ url: "/api/v1/auth/logout" }, postRequest);
       };
       handleLogout();
-    }, 1000 * 30);
+    }, 1000 * 60 * 5);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!userData.user) {
+      navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    dispatch(retreiveCurrentUser());
   }, []);
 
   return (
     <div>
       <Navbar />
       <MessageForm />
-      <UserInfo userData={userData} />
+      {userData.user && <UserInfo userData={userData} />}
     </div>
   );
 };
